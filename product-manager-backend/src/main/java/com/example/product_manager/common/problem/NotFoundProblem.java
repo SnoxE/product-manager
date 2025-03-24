@@ -1,4 +1,4 @@
-package com.example.product_manager.problem;
+package com.example.product_manager.common.problem;
 
 import java.util.Map;
 import org.zalando.problem.AbstractThrowableProblem;

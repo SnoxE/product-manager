@@ -1,5 +1,6 @@
-package com.example.product_manager;
+package com.example.product_manager.repository;
 
+import com.example.product_manager.model.UserEntity;
 import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

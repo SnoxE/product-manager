@@ -1,9 +1,19 @@
-package com.example.product_manager;
+package com.example.product_manager.service.auth;
 
+import com.example.product_manager.common.problem.DuplicateKeyErrorProblem;
+import com.example.product_manager.common.problem.InternalServerErrorProblem;
+import com.example.product_manager.model.UserEntity;
+import com.example.product_manager.repository.UserRepository;
+import com.example.product_manager.service.auth.model.AuthResponseDto;
+import com.example.product_manager.service.auth.model.NewUserDto;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.example.product_manager.service.auth.model.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,12 +23,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthService {
+  private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+
   private final JwtEncoder encoder;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
-  public AuthenticationService(
+  public AuthService(
       JwtEncoder encoder, PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.encoder = encoder;
     this.passwordEncoder = passwordEncoder;
@@ -46,10 +58,10 @@ public class AuthenticationService {
         this.encoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue(), roles);
   }
 
-  public UserEntity register(NewUserDto newUserDto) {
+  public UserDto register(NewUserDto newUserDto) {
     if (userRepository.findByUsername(newUserDto.username()).isPresent()) {
-      //      TODO
-      throw new RuntimeException("Username already taken");
+      log.error("Username is already taken, username={}", newUserDto.username());
+      throw new DuplicateKeyErrorProblem();
     }
 
     UserEntity entity =
@@ -57,13 +69,12 @@ public class AuthenticationService {
             null, newUserDto.username(), passwordEncoder.encode(newUserDto.password()), "USER");
 
     try {
-      return userRepository.save(entity);
+      entity = userRepository.save(entity);
+      return UserDtoMapper.toUserDto(entity);
     } catch (Exception e) {
-      //      TODO
-      // Log the error (you can use a logger instead)
-      //      System.err.println("Failed to save user: " + e.getMessage());
-      //      UsernameAlreadyExistsException, RegistrationException
-      throw new RuntimeException("Registration failed. Please try again later.");
+      log.error(
+          "Unable to save new user due to an unexpected error, message={}", e.getMessage(), e);
+      throw new InternalServerErrorProblem();
     }
   }
 }

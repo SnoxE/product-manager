@@ -1,8 +1,8 @@
 package com.example.product_manager.common;
 
-import com.example.product_manager.UserEntity;
-import com.example.product_manager.UserRepository;
-import com.example.product_manager.problem.NotFoundProblem;
+import com.example.product_manager.common.problem.NotFoundProblem;
+import com.example.product_manager.model.UserEntity;
+import com.example.product_manager.repository.UserRepository;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -76,10 +76,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
-                        "/api/open", "/api/register", "/api/login"
-                        //                                                "/api/users/register",
-                        //                                                "/api/users/email",
-                        //                                                "/api/users/problem",
+                        "/api/auth/register", "/api/auth/login"
                         //                                                "/swagger-ui/**",
                         //                                                "/v3/**"
                         )
