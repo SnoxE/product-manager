@@ -6,12 +6,11 @@ import com.example.product_manager.model.UserEntity;
 import com.example.product_manager.repository.UserRepository;
 import com.example.product_manager.service.auth.model.AuthResponseDto;
 import com.example.product_manager.service.auth.model.NewUserDto;
+import com.example.product_manager.service.auth.model.UserDto;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.example.product_manager.service.auth.model.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;

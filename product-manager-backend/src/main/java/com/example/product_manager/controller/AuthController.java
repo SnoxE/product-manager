@@ -1,6 +1,5 @@
 package com.example.product_manager.controller;
 
-import com.example.product_manager.model.UserEntity;
 import com.example.product_manager.service.auth.AuthService;
 import com.example.product_manager.service.auth.model.AuthRequestDto;
 import com.example.product_manager.service.auth.model.AuthResponseDto;
@@ -55,14 +54,4 @@ public class AuthController {
   public UserDto register(@RequestBody @Valid NewUserDto newUser) {
     return authService.register(newUser);
   }
-
-  //  @GetMapping("/api/authenticated")
-  //  public String authenticated() {
-  //    return "This endpoint required authentication";
-  //  }
-  //
-  //  @GetMapping("/api/authenticated/admin")
-  //  public String authenticatedAdmin() {
-  //    return "This endpoint required authentication and is only visible to users with admin role";
-  //  }
 }
