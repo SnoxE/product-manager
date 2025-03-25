@@ -24,6 +24,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 3
+        volumes:
+          - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
     steps:
       - uses: actions/checkout@v3
