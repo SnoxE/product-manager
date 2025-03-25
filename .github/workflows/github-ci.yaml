@@ -1,3 +1,11 @@
+name: Format and Build Check
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
 stages:
   - format_check
   - build
