@@ -1,4 +1,4 @@
-name: Format and Build Check
+name: Format Check and Build
 
 on:
   push:
@@ -6,41 +6,41 @@ on:
   pull_request:
     branches: [ "master" ]
 
-stages:
-  - format_check
-  - build
+jobs:
+  check-formatting-and-build:
+    runs-on: ubuntu-latest
 
-services:
-  - name: mongo:latest
-    alias: mongodb
-    command: ["--health-cmd", "mongo --eval 'db.runCommand({ connectionStatus: 1 })'", "--health-interval", "10s", "--health-timeout", "5s", "--health-retries", "3"]
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: product_manager
-    ports:
-      - "27017:27017"
+    services:
+      mongodb:
+        image: mongo:latest
+        container_name: mongodb
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: product_manager
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
 
-variables:
-  POSTGRES_USER: admin
-  POSTGRES_PASSWORD: password
-  POSTGRES_DB: product_manager
+    steps:
+      - uses: actions/checkout@v3
 
-before_script:
-  - apt-get update && apt-get install -y curl
-  - curl -sSL https://get.sdkman.io | bash
-  - source "$HOME/.sdkman/bin/sdkman-init.sh"
-  - sdk install java 21.0.0-open
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'liberica'
+          java-version: '21'
 
-format_check:
-  stage: format_check
-  script:
-    - cd product-manager/product-manager-backend
-    - chmod +x gradlew
-    - ./gradlew spotlessCheck
+      - name: Run spotlessCheck
+        working-directory: product-manager/product-manager-backend
+        run: |
+          chmod +x gradlew
+          ./gradlew spotlessCheck
 
-build:
-  stage: build
-  script:
-    - cd product-manager/product-manager-backend
-    - ./gradlew build
+      - name: Build product-manager
+        working-directory: product-manager/product-manager-backend
+        run: ./gradlew build
