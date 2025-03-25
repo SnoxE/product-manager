@@ -1,8 +1,9 @@
-package com.example.product_manager.common;
+package com.example.product_manager.common.config;
 
+import com.example.product_manager.common.RsaKeyProperties;
 import com.example.product_manager.common.problem.NotFoundProblem;
-import com.example.product_manager.model.UserEntity;
-import com.example.product_manager.repository.UserRepository;
+import com.example.product_manager.repository.user.UserRepository;
+import com.example.product_manager.repository.user.model.UserEntity;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -78,7 +80,11 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         "/api/auth/register", "/api/auth/login", "/swagger-ui/**", "/v3/**")
                     .permitAll()
-                    .requestMatchers("/api/authenticated/admin")
+                    .requestMatchers(HttpMethod.POST, "/api/products")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/products/{id}")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/products/{id}")
                     .hasRole("ADMIN")
                     .anyRequest()
                     .authenticated())

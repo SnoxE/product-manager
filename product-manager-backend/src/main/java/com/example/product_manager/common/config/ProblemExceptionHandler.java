@@ -1,4 +1,4 @@
-package com.example.product_manager.common;
+package com.example.product_manager.common.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

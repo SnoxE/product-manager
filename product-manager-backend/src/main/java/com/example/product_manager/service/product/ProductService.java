@@ -2,8 +2,8 @@ package com.example.product_manager.service.product;
 
 import com.example.product_manager.common.problem.InternalServerErrorProblem;
 import com.example.product_manager.common.problem.NotFoundProblem;
-import com.example.product_manager.model.ProductEntity;
-import com.example.product_manager.repository.ProductRepository;
+import com.example.product_manager.repository.product.ProductRepository;
+import com.example.product_manager.repository.product.model.ProductEntity;
 import com.example.product_manager.service.product.model.NewProductDto;
 import com.example.product_manager.service.product.model.ProductDto;
 import com.example.product_manager.service.product.model.UpdateProductDto;
@@ -28,11 +28,6 @@ public class ProductService {
     return ProductDtoMapper.toProductDtoList(productEntityList);
   }
 
-  public ProductDto getProductById(String id) {
-    var entity = productRepository.findById(id);
-    return entity.map(ProductDtoMapper::toProductDto).orElse(null);
-  }
-
   public ProductDto addProduct(NewProductDto productDto) {
     ProductEntity entity =
         new ProductEntity(
@@ -50,6 +45,11 @@ public class ProductService {
           "Unable to save new product due to an unexpected error, message={}", e.getMessage(), e);
       throw new InternalServerErrorProblem();
     }
+  }
+
+  public ProductDto getProductById(String id) {
+    var entity = productRepository.findById(id);
+    return entity.map(ProductDtoMapper::toProductDto).orElse(null);
   }
 
   public ProductDto updateProduct(String id, UpdateProductDto productDto) {
@@ -82,5 +82,10 @@ public class ProductService {
           "Unable to delete product due to an unexpected error, message={}", e.getMessage(), e);
       throw new InternalServerErrorProblem();
     }
+  }
+
+  public List<ProductDto> getProductsByCategory(String category) {
+    List<ProductEntity> productEntityList = productRepository.findByCategory(category);
+    return ProductDtoMapper.toProductDtoList(productEntityList);
   }
 }

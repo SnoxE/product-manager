@@ -1,4 +1,4 @@
-package com.example.product_manager.common;
+package com.example.product_manager.common.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

@@ -1,6 +1,6 @@
 package com.example.product_manager.service.product;
 
-import com.example.product_manager.model.ProductEntity;
+import com.example.product_manager.repository.product.model.ProductEntity;
 import com.example.product_manager.service.product.model.ProductDto;
 import java.util.List;
 

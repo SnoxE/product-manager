@@ -2,8 +2,8 @@ package com.example.product_manager.service.auth;
 
 import com.example.product_manager.common.problem.DuplicateKeyErrorProblem;
 import com.example.product_manager.common.problem.InternalServerErrorProblem;
-import com.example.product_manager.model.UserEntity;
-import com.example.product_manager.repository.UserRepository;
+import com.example.product_manager.repository.user.UserRepository;
+import com.example.product_manager.repository.user.model.UserEntity;
 import com.example.product_manager.service.auth.model.AuthResponseDto;
 import com.example.product_manager.service.auth.model.NewUserDto;
 import com.example.product_manager.service.auth.model.UserDto;
@@ -65,7 +65,11 @@ public class AuthService {
 
     UserEntity entity =
         new UserEntity(
-            null, newUserDto.username(), passwordEncoder.encode(newUserDto.password()), "USER");
+            null,
+            newUserDto.username(),
+            newUserDto.email(),
+            passwordEncoder.encode(newUserDto.password()),
+            "USER");
 
     try {
       entity = userRepository.save(entity);

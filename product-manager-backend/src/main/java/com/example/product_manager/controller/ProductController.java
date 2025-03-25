@@ -34,16 +34,16 @@ public class ProductController {
     return productService.getAllProducts();
   }
 
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ProductDto getProductDetails(@PathVariable @NotEmpty String id) {
-    return productService.getProductById(id);
-  }
-
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ProductDto addProduct(@RequestBody @Valid NewProductDto productDto) {
     return productService.addProduct(productDto);
+  }
+
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ProductDto getProductById(@PathVariable @NotEmpty String id) {
+    return productService.getProductById(id);
   }
 
   @PutMapping(
@@ -59,5 +59,10 @@ public class ProductController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteProduct(@PathVariable @NotEmpty String id) {
     productService.deleteProduct(id);
+  }
+
+  @GetMapping(value = "/category/{category}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<ProductDto> getProductsByCategory(@PathVariable @NotEmpty String category) {
+    return productService.getProductsByCategory(category);
   }
 }
