@@ -1,0 +1,38 @@
+stages:
+  - format_check
+  - build
+
+services:
+  - name: mongo:latest
+    alias: mongodb
+    command: ["--health-cmd", "mongo --eval 'db.runCommand({ connectionStatus: 1 })'", "--health-interval", "10s", "--health-timeout", "5s", "--health-retries", "3"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: product_manager
+    ports:
+      - "27017:27017"
+
+variables:
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: product_manager
+
+before_script:
+  - apt-get update && apt-get install -y curl
+  - curl -sSL https://get.sdkman.io | bash
+  - source "$HOME/.sdkman/bin/sdkman-init.sh"
+  - sdk install java 21.0.0-open
+
+format_check:
+  stage: format_check
+  script:
+    - cd product-manager/product-manager-backend
+    - chmod +x gradlew
+    - ./gradlew spotlessCheck
+
+build:
+  stage: build
+  script:
+    - cd product-manager/product-manager-backend
+    - ./gradlew build
